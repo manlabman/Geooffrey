@@ -1,0 +1,2 @@
+# Geooffrey
+*.AI
