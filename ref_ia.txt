@@ -1,4 +1,13 @@
-LLa premisa fundamental detrás de los algoritmos desarrollados por Geoffrey Hinton, especialmente en el ámbito de las redes neuronales y el aprendizaje profundo, se basa en inspirarse en el funcionamiento del cerebro humano para crear sistemas de inteligencia artificial (IA) capaces de aprender representaciones de datos de manera automática y jerárquica. A continuación, se detallan los principios clave que guiaron su trabajo:
+LLa premisa fundamental 
+detrás de los algoritmos 
+desarrollados por Geoffrey 
+Hinton, especialmente en el 
+ámbito de las redes 
+neuronales y el aprendizaje 
+profundo, se basa en 
+inspirarse en el 
+funcionamiento del cerebro 
+humano para crear sistemas de inteligencia artificial (IA) capaces de aprender representaciones de datos de manera automática y jerárquica. A continuación, se detallan los principios clave que guiaron su trabajo:
 
 1. Imitación de la neurobiología
 
