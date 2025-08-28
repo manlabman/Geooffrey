@@ -1,0 +1,76 @@
+Excelente pregunta. Estás refiriéndote al componente fundamental de la arquitectura Transformer, específicamente a la capa de red neuronal feed-forward (FFN) que sigue a la capa de auto-atención.
+
+Aquí te explico cómo se computa el output h'_t (a menudo llamado "output intermedio" o "output de la sub-capa FFN") para una posición específica t.
+
+Contexto Primero: ¿Dónde está el FFN?
+
+En un decoder de Transformer (como en el modelo original "Attention is All You Need"), cada capa contiene dos sub-capas principales:
+
+1. Auto-atención enmascarada (Masked Multi-Head Attention), que produce un output h_t para la posición t.
+2. Red Neuronal Feed-Forward (FFN), que toma ese h_t y produce h'_t.
+
+Es crucial entender que la FFN se aplica de manera idéntica e independiente a cada posición t. Esto significa que los mismos pesos y la misma operación transforman cada vector h_t.
+
+---
+
+Cómputo del Output h'_t
+
+La operación de la FFN es sorprendentemente simple pero muy poderosa. Consiste en dos transformaciones lineales con una función de activación no lineal (ReLU) en el medio.
+
+La fórmula es la siguiente:
+
+h'_t = FFN(h_t) = W_2 · ReLU( W_1 · h_t + b_1 ) + b_2
+
+Donde:
+
+· h_t es el vector de entrada de dimensión d_model (e.g., 512, 1024) para la posición t. Este es el output de la sub-capa de auto-atención previa.
+· W_1 es una matriz de pesos de dimensión d_model × d_ff.
+· b_1 es un vector de bias de dimensión d_ff.
+· W_2 es una matriz de pesos de dimensión d_ff × d_model.
+· b_2 es un vector de bias de dimensión d_model.
+· d_ff es la dimensionalidad de la capa interna de la FFN, típicamente mucho más grande que d_model (e.g., d_ff = 2048 o 4096 cuando d_model = 512). Esta es la razón por la que a veces se le llama "capa expansiva".
+
+Paso a Paso:
+
+1. Primera Transformación Lineal (Expansión):
+   · Tomas el vector de entrada h_t (dimensión: d_model) y lo multiplicas por la matriz W_1.
+   · Le sumas el vector de bias b_1.
+   · Resultado: Un nuevo vector de dimensión mucho mayor d_ff.
+   · z = W_1 · h_t + b_1
+2. Función de Activación No Lineal (ReLU):
+   · Aplicas la función de activación ReLU (Rectified Linear Unit) al vector z. Esta función pone a cero todos los valores negativos en z y deja los positivos igual. Esta no linealidad es crucial para que la red pueda aprender funciones complejas.
+   · a = ReLU(z) = max(0, z)
+3. Segunda Transformación Lineal (Proyección):
+   · Tomas el vector activado a (dimensión: d_ff) y lo multiplicas por la matriz W_2.
+   · Le sumas el vector de bias b_2.
+   · Resultado: Un vector de dimensión d_model again, que es h'_t, el output final de la sub-capa FFN para la posición t.
+   · h'_t = W_2 · a + b_2
+
+Visualización del Flujo para una Posición t
+
+```
+h_t  (d_model)
+  |
+  | (Multiplicación por W_1)
+  |
+  V
+z = W_1 · h_t + b_1  (d_ff)
+  |
+  | (Aplicar ReLU)
+  |
+  V
+a = ReLU(z)  (d_ff)
+  |
+  | (Multiplicación por W_2)
+  |
+  V
+h'_t = W_2 · a + b_2  (d_model)  --> ¡Output final!
+```
+
+¿Por qué es importante?
+
+La capa FFN introduce capacidad y no linealidad a la red. Mientras que la capa de atención se encarga de mezclar información entre diferentes posiciones (contexto), la FFN se encarga de transformar y procesar la representación de cada posición individualmente. Piensa en ello como un "procesador de características" aplicado a cada token, después de que la atención le haya proporcionado el contexto relevante de otros tokens.
+
+Resumen en una línea:
+
+h'_t se computa proyectando h_t a un espacio de mayor dimensión, aplicando una función ReLU, y luego proyectándolo de vuelta a la dimensión original.
