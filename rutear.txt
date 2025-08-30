@@ -1,0 +1,65 @@
+⌨️ Para conseguir que Termux opere con permisos de root (superusuario), necesitas que tu dispositivo Android esté rooteado. Termux por sí mismo no puede rootear tu dispositivo, pero si ya tienes root, puedes otorgarle permisos elevados. Aquí te explico las opciones:
+
+📌 1. Requisito previo: Dispositivo Android rooteado
+
+· El root debe realizarse a nivel del sistema Android, no dentro de Termux. Herramientas como Magisk son comunes para rootear dispositivos .
+· ⚠️ Rootear anula la garantía y puede generar riesgos de seguridad. Siempre haz backup de tus datos.
+
+🔧 2. Conceder permisos root a Termux
+
+· Una vez rooteado el dispositivo, instala Termux desde F-Droid (versión oficial recomendada) .
+· Dentro de Termux, instala el paquete tsu (Termux su) para acceder a root:
+  ```bash
+  pkg install tsu
+  ```
+  Este paquete permite ejecutar comandos con privilegios root preservando el entorno de Termux .
+
+🖥️ 3. Ejecutar Termux como root
+
+· Usa el comando:
+  ```bash
+  tsu
+  ```
+  Esto solicitará permisos de superusuario (via Magisk u otra herramienta root). Acepta la solicitud para obtener una shell root .
+
+⚠️ 4. Alternativas si no quieres rootear el dispositivo
+
+· Entornos pseudo-root (proot): Herramientas como proot simulan un entorno root sin permisos reales. Por ejemplo, el script root-termux :
+  ```bash
+  git clone https://github.com/hctilg/root-termux.git
+  cd root-termux
+  chmod +x *
+  bash install.sh
+  ```
+  Esto crea un entorno aislado con permisos elevados simulados, útil para pruebas o scripts que no requieren kernel-level access.
+· ❌ Limitaciones: No podrás modificar el sistema real o acceder a hardware restringido.
+
+🔍 5. Verificar el estado de root
+
+· Tras ejecutar tsu, verifica con:
+  ```bash
+  whoami
+  ```
+  Debe devolver root. También prueba comandos que requieran root, como montar sistemas de archivos.
+
+💡 6. Usos comunes de Termux con root
+
+· Ejecutar servidores (SSH, HTTP) en puertos privilegiados (<1024) .
+· Modificar archivos del sistema o acceder a particiones.
+· Herramientas de hacking ético que requieren root (ej: nmap con escaneo avanzado).
+
+⚠️ 7. Consideraciones de seguridad
+
+· Ejecutar Termux como root expone tu dispositivo a riesgos si usas scripts maliciosos.
+· Algunas aplicaciones (ej: bancos) pueden detectar root y no funcionar.
+
+📚 8. Recursos adicionales
+
+· Módulo Magisk TermuxRootMods : Mejora la integración de Termux con root, añadiendo funciones como monitoreo de temperatura o limpieza de cache.
+· Foros como StackExchange  ofrecen soluciones específicas para problemas con root.
+
+💎 En resumen:
+
+· Si tu dispositivo está rooteado: Usa tsu dentro de Termux para obtener root.
+· Si no está rooteado: Considera entornos simulados como proot, pero ten en cuenta sus limitaciones.
+· ⚠️ Siempre prioriza la seguridad y comprende los riesgos antes de rootear.
