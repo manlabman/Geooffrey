@@ -1,0 +1,132 @@
+En Magik, el enrutamiento (routing) típicamente se refiere a la gestión de peticiones HTTP en aplicaciones web, similar a frameworks como Express.js en Node.js. A continuación, te explico cómo se puede implementar un sistema de enrutamiento básico en Magik:
+
+---
+
+1. Conceptos Básicos
+
+Magik es un lenguaje de programación utilizado principalmente en entornos como Smallworld GIS. Para manejar rutas HTTP, generalmente se usa junto con un servidor web (como Apache) y técnicas de integración como CGI o APIs REST.
+
+---
+
+2. Configuración Inicial
+
+Asegúrate de tener:
+
+· Un servidor web (ej: Apache) configurado para ejecutar scripts Magik.
+· Acceso al sistema de archivos donde se aloja tu aplicación.
+
+---
+
+3. Ejemplo de Ruteo con Magik
+
+Supongamos que estás construyendo una API REST. Aquí hay un ejemplo simplificado:
+
+```magik
+# Método para manejar una solicitud HTTP
+_handle_request(req, res)
+  # Extraer la ruta de la solicitud
+  path << req.path
+
+  # Enrutamiento basado en el path
+  _if path = "/api/users"
+    _return _handle_users(req, res)
+  _elif path = "/api/products"
+    _return _handle_products(req, res)
+  _else
+    _return res.status(404).write("Ruta no encontrada")
+  _endif
+_end
+```
+
+---
+
+4. Manejo de Métodos HTTP
+
+Puedes distinguir entre GET, POST, etc.:
+
+```magik
+_handle_users(req, res)
+  _if req.method = "GET"
+    # Lógica para obtener usuarios
+    users << _get_all_users()
+    res.write(users.to_json())
+  _elif req.method = "POST"
+    # Crear un nuevo usuario
+    data << req.body
+    _create_user(data)
+    res.status(201).write("Usuario creado")
+  _endif
+_end
+```
+
+---
+
+5. Usar Parámetros de Ruta
+
+Para rutas como /api/users/123, extrae parámetros:
+
+```magik
+_handle_user_by_id(req, res)
+  parts << req.path.split("/")
+  user_id << parts[3]  # Asumiendo /api/users/123
+  user << _get_user_by_id(user_id)
+  _if user
+    res.write(user.to_json())
+  _else
+    res.status(404).write("Usuario no encontrado")
+  _endif
+_end
+```
+
+---
+
+6. Integración con Servidor Web
+
+· Configura el servidor para redirigir solicitudes a tu script Magik (ej: usando CGI).
+· Asegúrate de que Magik pueda leer las variables de entorno HTTP (como PATH_INFO).
+
+---
+
+7. Librerías o Frameworks
+
+Si estás usando un framework específico para Magik (como MagikWeb), el enrutamiento podría ser más declarativo:
+
+```magik
+# Ejemplo con MagikWeb (pseudocódigo)
+router.get("/api/users", :_handle_users)
+router.post("/api/users", :_create_user)
+```
+
+---
+
+8. Consideraciones
+
+· Seguridad: Valida y sanitiza todas las entradas.
+· Manejo de Errores: Devuelve códigos HTTP adecuados (404, 500, etc.).
+· JSON: Usa métodos para serializar/deserializar JSON si trabajas con APIs.
+
+---
+
+9. Ejemplo Completo
+
+```magik
+# Configuración inicial en el script CGI
+_global handle_request(req, res)
+  _try
+    path << req.path
+    _if path.start_with?("/api/users")
+      _handle_users(req, res)
+    _else
+      res.status(404).write("Ruta no válida")
+    _endif
+  _when exception
+    res.status(500).write("Error interno: " + exception.message)
+  _endtry
+_end
+```
+
+---
+
+Conclusión
+
+El enrutamiento en Magik depende de cómo integres el lenguaje con tu servidor web. Ya sea usando CGI, REST APIs o frameworks específicos, la lógica básica consiste en mapear paths a funciones/métodos y manejar métodos HTTP y parámetros. ¡Adapta los ejemplos según tu entorno y necesidades!
