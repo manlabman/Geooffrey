@@ -1,0 +1,62 @@
+¡Excelente pregunta! "PLN" es el acrónimo de Procesamiento del Lenguaje Natural (en inglés, Natural Language Processing o NLP).
+
+Es una rama de la inteligencia artificial (IA) que se enfoca en permitir que las computadoras entiendan, interpreten y generen lenguaje humano (texto y habla) de una manera útil y significativa.
+
+Las tareas de PLN son las actividades específicas que los modelos (como los LLM que mencionamos) realizan para lograr este objetivo. Son los "bloques de construcción" de aplicaciones más complejas.
+
+Aquí te explico las tareas más comunes y conocidas:
+
+🎯 Tareas Fundamentales de PLN
+
+1. Clasificación de Texto (Text Classification)
+   · ¿Qué es? Asignar una etiqueta o categoría a un texto.
+   · Ejemplos:
+     · Detección de Spam: Clasificar un email como "spam" o "no spam".
+     · Análisis de Sentimiento (Sentiment Analysis): Determinar si un comentario en redes sociales es "positivo", "negativo" o "neutral".
+     · Categorización de Noticias: Clasificar un artículo como "deportes", "política" o "tecnología".
+2. Reconocimiento de Entidades Nombradas (Named Entity Recognition - NER)
+   · ¿Qué es? Identificar y clasificar palabras clave en un texto en categorías predefinidas.
+   · Ejemplo: En la frase "Pedro Sánchez viajó a Madrid el lunes", un sistema NER identificaría:
+     · Pedro Sánchez → Persona
+     · Madrid → Ubicación
+     · lunes → Fecha
+3. Extracción de Relaciones (Relation Extraction)
+   · ¿Qué es? Identificar las conexiones semánticas entre entidades reconocidas.
+   · Ejemplo: A partir de "Apple fue fundada por Steve Jobs en Cupertino", extraer la relación: (Apple, fue fundada por, Steve Jobs) y (Apple, ubicada en, Cupertino).
+4. Respuesta a Preguntas (Question Answering - QA)
+   · ¿Qué es? Encontrar la respuesta a una pregunta formulada en lenguaje natural dentro de un texto dado.
+   · Ejemplo:
+     · Texto: "El cambio climático está causando un aumento en el nivel del mar..."
+     · Pregunta: "¿Qué está causando el aumento del nivel del mar?"
+     · Respuesta del modelo: "el cambio climático"
+5. Resumen de Texto (Text Summarization)
+   · ¿Qué es? Crear un resumen corto y coherente que capture las ideas principales de un documento largo.
+   · Tipos:
+     · Extractivo: Selecciona y combina frases clave del texto original.
+     · Abstractivo: Genera nuevas frases para parafrasear el contenido, como haría un humano.
+6. Traducción Automática (Machine Translation - MT)
+   · ¿Qué es? Traducir texto de un idioma a otro automáticamente.
+   · Ejemplo: Google Translate, DeepL.
+7. Generación de Texto (Text Generation)
+   · ¿Qué es? La tarea por excelencia de los LLMs. Crear texto nuevo, coherente y relevante a partir de una prompt o instrucción.
+   · Ejemplos: Escribir un poema, generar ideas para una campaña de marketing, redactar un correo electrónico.
+8. Análisis de Opinión (Aspect-Based Sentiment Analysis)
+   · ¿Qué es? Una versión más detallada del análisis de sentimiento. No solo dice si una reseña es positiva, sino que identifica sobre qué aspecto es positiva o negativa.
+   · Ejemplo: En la reseña "La cámara del teléfono es excelente, pero la batería dura muy poco", el análisis identificaría:
+     · cámara → Sentimiento: Positivo
+     · batería → Sentimiento: Negativo
+
+🔧 Otras Tareas Importantes:
+
+· Corrección Gramatical (Grammatical Error Correction - GEC): Corregir errores ortográficos y gramaticales.
+· Separación de Palabras (Tokenization): Dividir un texto en palabras o subpalabras (tokens), que es el primer paso para casi cualquier tarea de PLN.
+· Lematización y Derivación (Lemmatization & Stemming): Reducir palabras a su forma base o raíz (ej: "corriendo" → "correr").
+· Etiquetado Gramatical (Part-of-Speech Tagging - POS): Identificar si una palabra es un verbo, sustantivo, adjetivo, etc.
+
+🚀 ¿Cómo se relacionan los LLM con estas tareas?
+
+Los Modelos de Lenguaje Grande (LLM) como GPT-4, LLaMA o Gemini son la evolución más reciente en PLN. Su gran avance es que son modelos de propósito general entrenados con cantidades masivas de datos.
+
+En lugar de crear un modelo específico para cada tarea (ej: uno solo para análisis de sentimiento), un solo LLM puede realizar todas las tareas anteriores y muchas más, simplemente dándole una instrucción en lenguaje natural (lo que se conoce como "prompting").
+
+Espero que esto te haya aclarado qué son las tareas de PLN. ¡Son la base de casi toda la inteligencia artificial que interactúa con nosotros usando el lenguaje
