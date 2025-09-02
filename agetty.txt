@@ -1,0 +1,122 @@
+El comando agetty (alternative getty) en Linux es una herramienta esencial para gestionar terminales físicos o virtuales, permitiendo el acceso multi-usuario al sistema. Su función principal es abrir un puerto tty, solicitar un nombre de usuario e invocar el comando /bin/login para autenticar al usuario. A continuación, se explican sus aspectos clave:
+
+---
+
+📌 1. Sintaxis Básica
+
+```bash
+agetty [opciones] puerto [velocidad_baudio...] [terminal]
+```
+
+· puerto: Ruta relativa al directorio /dev (ej: ttyS1). Si se usa -, asume que la entrada estándar ya está conectada a un puerto tty.
+· velocidad_baudio: Lista de velocidades en baudios (ej: 9600,2400,1200), especificadas en orden descendente.
+· terminal: Valor para la variable de entorno TERM (ej: vt100, linux).
+
+---
+
+⚙️ 2. Opciones Comunes
+
+Opción Descripción
+-8 o --8bits Asume una transmisión de 8 bits (sin detección de paridad).
+-a o --autologin <usuario> Inicio de sesión automático sin solicitar credenciales.
+-h o --flow-control Habilita control de flujo hardware (RTS/CTS).
+-t o --timeout <segundos> Termina la sesión si no se recibe input en el tiempo especificado.
+-i o --noissue Suprime la visualización del archivo /etc/issue (mensaje de login).
+-J o --noclear Evita limpiar la pantalla antes del prompt de login.
+-U o --detect-case Detecta terminales que solo admiten mayúsculas.
+--version Muestra la versión de agetty.
+
+---
+
+🖥️ 3. Ejemplos Prácticos
+
+1. Terminal virtual con 8 bits y tipo linux:
+   ```bash
+   sudo agetty -8 - linux
+   ```[citation:1][citation:6]
+   
+2. Conexión serial con timeout de 60 segundos:
+   ```bash
+   sudo agetty -t 60 ttyS0 9600 vt100
+   ```[citation:1][citation:6]
+   
+3. Autologin para un usuario específico:
+   ```bash
+   sudo agetty --autologin usuario tty1
+   ```[citation:1][citation:4]
+   
+4. Habilitar control de flujo y detección de baudios:
+   ```bash
+   sudo agetty -h -m ttyS0 115200,9600 vt102
+   ```[citation:1][citation:7]
+   
+5. Configurar para puerto serial con inicialización de módem:
+   ```bash
+   sudo agetty -I 'ATE0' ttyS0 9600
+   ```[citation:4][citation:7]
+   
+
+---
+
+🔧 4. Configuración en Systemd
+
+En sistemas modernos, agetty se gestiona con systemd. Para configurar un servicio serial:
+
+```bash
+# Crear un archivo de servicio para el puerto serial
+sudo nano /etc/systemd/system/[email protected]
+
+# Contenido del servicio:
+[Unit]
+Description=Serial Getty on %I
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=-/sbin/agetty --keep-baud 115200,38400,9600 %I $TERM
+Restart=always
+
+[Install]
+WantedBy=getty.target
+```
+
+Recargar y habilitar el servicio:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable [email protected]
+```[citation:3]
+
+---
+
+### ⚠️ 5. **Consideraciones de Seguridad**
+- **Autologin**: Evitar en sistemas expuestos, ya omite la autenticación[citation:4][citation:7].
+- **Timeout**: Útil para conexiones remotas o seriales para liberar recursos inactivos[citation:1][citation:6].
+- **Permisos**: Requiere permisos de root (o sudo) para ejecutarse[citation:6].
+
+---
+
+### 🔍 6. **Manejo de Errores y Depuración**
+- Verificar que el puerto serial exista en `/dev`.
+- Usar `stty` para configurar parámetros del puerto serial si `agetty` no los aplica correctamente.
+- Logs del sistema (`journalctl`) para errores en servicios systemd[citation:3].
+
+---
+
+### 📚 7. **Documentación y Ayuda**
+- Consultar el manual completo:
+  ```bash
+  man agetty
+  ```[citation:4]
+- Mostrar ayuda breve:
+  ```bash
+  agetty --help
+  ```[citation:1]
+
+---
+
+### 💡 8. **Caso de Uso Típico**
+En sistemas embebidos o servidores headless, `agetty` se usa para habilitar consolas seriales, permitiendo acceso administrativo cuando no hay red disponible[citation:3][citation:6].
+
+---
+
+Este comando es parte del paquete `util-linux` y está preinstalado en la mayoría de distribuciones Linux. Su flexibilidad lo hace ideal para personalizar el proceso de login en terminales físicos, virtuales o seriales[citation:6].
