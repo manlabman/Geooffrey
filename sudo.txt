@@ -1,0 +1,70 @@
+Diferencia entre su y sudo
+
+🖥️ su (Switch User)
+
+· Propósito: Cambiar completamente a otro usuario (por defecto, root).
+· Autenticación: Requiere la contraseña del usuario objetivo (ej: contraseña de root).
+· Ambiente: Carga el entorno shell y variables del usuario objetivo.
+· Uso:
+  ```bash
+  su                 # Cambia a root (solicita contraseña de root)
+  su - usuario       # Cambia a "usuario" y carga su entorno
+  ```
+· Permisos: Otorga todos los privilegios del usuario objetivo hasta que se cierre la sesión (exit).
+
+⚡ sudo (Super User DO)
+
+· Propósito: Ejecutar un comando específico con privilegios elevados.
+· Autenticación: Requiere la contraseña del usuario actual (no la de root).
+· Ambiente: Mantiene el entorno del usuario original (a menos que se use -i o -H).
+· Uso:
+  ```bash
+  sudo comando        # Ejecuta "comando" como root
+  sudo -u usuario comando  # Ejecuta "comando" como "usuario"
+  ```
+· Configuración: Control granular mediante /etc/sudoers (permite restringir comandos específicos por usuario).
+· Registro: Registra cada comando ejecutado en /var/log/auth.log (auditoría).
+
+---
+
+🔍 Tabla Comparativa
+
+Característica su sudo
+Contraseña requerida Del usuario objetivo Del usuario actual
+Alcance Sesión completa Por comando
+Auditoría Limitada (solo inicio sesión) Detallada (por comando)
+Configuración Global (todos o nada) Granular (por usuario/comando)
+Variables de entorno Carga las del usuario objetivo Mantiene las del usuario actual
+
+---
+
+⚠️ Seguridad y Mejores Prácticas
+
+1. sudo es más seguro:
+   · No comparte la contraseña de root.
+   · Mayor control sobre permisos.
+   · Registro detallado de acciones.
+2. Evitar su root:
+   · Deshabilitar login directo de root (sudo passwd -l root en algunas distros).
+   · Usar sudo -i para una shell root interactiva si es necesario.
+3. Configurar sudoers:
+   · Editar con visudo para evitar errores.
+   · Ejemplo de regla:
+     ```
+     usuario ALL=(ALL) NOPASSWD: /usr/bin/apt update
+     ```
+
+---
+
+🔄 Uso Híbrido Común
+
+· sudo su: Cambia a root usando la contraseña del usuario actual (requiere configurar sudoers).
+· sudo -i: Simula un login de root (carga entorno root).
+
+---
+
+📌 Conclusión
+
+· Usa sudo para tareas administrativas esporádicas (mayor seguridad y auditoría).
+· Usa su solo cuando necesites una sesión prolongada como otro usuario (ej: mantenimiento).
+· En sistemas modernos, sudo es la opción recomendada por defecto.
