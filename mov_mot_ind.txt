@@ -1,0 +1,137 @@
+Aquí tienes un ejemplo de programa en ensamblador para el microcontrolador XC164 que controla un motor de inducción mediante PWM (Modulación por Ancho de Pulso). Este código asume que estás utilizando un inversor trifásico y requiere configuración de periféricos específicos del XC164:
+
+```assembly
+;-----------------------------------------------------------------------------
+; Programa de control para motor de inducción usando XC164
+; Utiliza el módulo GPT1 para generar señales PWM
+;-----------------------------------------------------------------------------
+#include "xc164.inc"  ; Incluir definiciones de registros
+
+;--- Definiciones de hardware ---
+PWM_PERIOD   EQU  1000    ; Periodo del PWM (ajustar según frecuencia deseada)
+MOTOR_START  EQU  P8.0    ; Pin de inicio del motor (ejemplo)
+MOTOR_DIR    EQU  P8.1    ; Pin de dirección (ejemplo)
+
+;--- Variables en RAM ---
+DSEG AT 20h
+PWM_DUTY:   DSW  1       ; Ciclo de trabajo del PWM (0-PWM_PERIOD)
+
+;--- Código principal ---
+CSEG AT 400h
+MAIN:
+    ; Inicializar stack pointer
+    MOV     SP, #0F800h   ; Ajustar según memoria disponible
+
+    ; Configurar puertos de entrada/salida
+    MOV     DP0, #0FF00h  ; Puerto 8 como salida digital
+    MOV     DP1, #0000h   ; Puerto 9 como entrada (ejemplo)
+
+    ; Configurar módulo GPT1 para PWM
+    CALL    INIT_GPT1
+
+    ; Valores iniciales
+    MOV     PWM_DUTY, #500  ; Ciclo de trabajo inicial 50%
+    MOV     R12, #0         ; Contador de velocidad
+
+MAIN_LOOP:
+    ; Control principal del motor
+    CALL    UPDATE_PWM
+    CALL    CHECK_CONTROLS
+    CALL    APPLY_SAFETY
+    JMP     MAIN_LOOP
+
+;-----------------------------------------------------------------------------
+; INIT_GPT1 - Inicializar Timer General Purpose 1 para modo PWM
+;-----------------------------------------------------------------------------
+INIT_GPT1:
+    MOV     GPT12E_T2CON, #0000h   ; Reset control register
+    MOV     GPT12E_T2, #0          ; Valor inicial del timer
+    MOV     GPT12E_T2REL, #PWM_PERIOD  ; Periodo del PWM
+
+    ; Configurar canal 1 del GPT1 para PWM
+    MOV     GPT12E_T3CON, #0040h   ; Modo PWM enable
+    MOV     GPT12E_T3, PWM_DUTY    ; Valor inicial del duty cycle
+    MOV     GPT12E_T3REL, #0       ; Clear reload value
+
+    ; Habilitar timer
+    MOV     GPT12E_T2CON, #80C0h   ; Enable timer y modo autoreload
+    RET
+
+;-----------------------------------------------------------------------------
+; UPDATE_PWM - Actualizar ciclo de trabajo del PWM
+;-----------------------------------------------------------------------------
+UPDATE_PWM:
+    MOV     GPT12E_T3, PWM_DUTY    ; Cargar nuevo valor de duty
+    RET
+
+;-----------------------------------------------------------------------------
+; CHECK_CONTROLS - Leer controles de operación
+;-----------------------------------------------------------------------------
+CHECK_CONTROLS:
+    ; Leer entradas de control (ejemplo)
+    JNB     MOTOR_START, NO_START
+    CALL    INCREASE_SPEED
+NO_START:
+    ; Aquí más lógica de control...
+    RET
+
+;-----------------------------------------------------------------------------
+; INCREASE_SPEED - Incrementar velocidad gradualmente
+;-----------------------------------------------------------------------------
+INCREASE_SPEED:
+    CMP     PWM_DUTY, #(PWM_PERIOD-10)
+    JMP     ULT, MAX_SPEED
+    ADD     PWM_DUTY, #10
+MAX_SPEED:
+    RET
+
+;-----------------------------------------------------------------------------
+; APPLY_SAFETY - Verificar condiciones de seguridad
+;-----------------------------------------------------------------------------
+APPLY_SAFETY:
+    ; Aquí implementar protecciones:
+    ; - Sobrecorriente
+    ; - Sobretemperatura
+    ; - Under/Over voltage
+    RET
+
+;-----------------------------------------------------------------------------
+; Rutina de interrupción de falla (ejemplo)
+;-----------------------------------------------------------------------------
+EXTINT2:
+    PUSH    PSW
+    MOV     PWM_DUTY, #0          ; Apagar PWM en falla
+    MOV     GPT12E_T3, #0
+    POP     PSW
+    RETI
+
+;--- Vectores de interrupción ---
+CSEG AT 0C000h
+    DW      EXTINT2    ; Vector para interrupción externa 2 (protección)
+
+END
+```
+
+Explicación importante:
+
+1. Configuración PWM: El módulo GPT1 del XC164 se configura para generar señales PWM con periodo y ciclo de trabajo ajustables.
+2. Control de velocidad: La velocidad se controla modificando el registro PWM_DUTY que determina el ciclo de trabajo.
+3. Seguridad: Incluye esqueleto para protecciones básicas (debes implementar las verificaciones específicas).
+4. Escalado: Los valores de PWM_PERIOD y los incrementos de velocidad deben calibrarse según:
+   · Frecuencia de operación deseada
+   · Resolución del PWM
+   · Características del motor
+5. Hardware adicional: Este código asume que existe hardware externo para:
+   · Driver de potencia (IGBTs/MOSFETs)
+   · Circuitos de protección
+   · Sensores de corriente/temperatura
+
+Para usar este programa:
+
+1. Ajustar los valores de PWM_PERIOD según tu frecuencia de conmutación deseada
+2. Implementar las rutinas de seguridad completas (APPLY_SAFETY)
+3. Añadir la lógica de control específica (lazo cerrado, V/f, etc.)
+4. Configurar correctamente los vectores de interrupción
+5. Conectar las señales PWM al inversor de potencia
+
+Este código es un punto de partida básico y debe ser adaptado para tu hardware específico y requisitos de operación del motor.
